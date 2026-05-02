@@ -2,7 +2,7 @@
 # Use of this source code is governed by a BSD-style
 # license that can be found in the LICENSE file.
 
-include ../Makefile.native.mk
+include Makefile.toolchain.native.mk
 
 C_SRC_DIR := src/c
 OBJ_DIR := build/$(NATIVE_BUILD_DIR)
@@ -13,7 +13,8 @@ C_SRC := $(wildcard $(C_SRC_DIR)/*.c)
 C_OBJ := $(C_SRC:$(C_SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 C_DEFINES = -D_LIBC_LIMITS_H_
-INCLUDE_DIRS := -I../minimalclib/include -Iinclude $(INCLUDE_DIRS)
+MINIMALCLIB_DIR ?= ../minimalclib
+INCLUDE_DIRS := -I$(MINIMALCLIB_DIR)/include -Iinclude $(INCLUDE_DIRS)
 
 
 $(LIB) : $(C_OBJ)

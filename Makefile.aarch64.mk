@@ -2,7 +2,9 @@
 # Use of this source code is governed by a BSD-style
 # license that can be found in the LICENSE file.
 
-include ../Makefile.aarch64.mk
+include Makefile.toolchain.aarch64.mk
+
+MINIMALCLIB_DIR ?= ../minimalclib
 
 C_SRC_DIR := src/c
 
@@ -14,7 +16,7 @@ C_SRC := $(wildcard $(C_SRC_DIR)/*.c)
 C_OBJ := $(C_SRC:$(C_SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 C_DEFINES := 
-INCLUDE_DIRS := -I../minimalclib/include -Iinclude $(INCLUDE_DIRS)
+INCLUDE_DIRS := -I$(MINIMALCLIB_DIR)/include -Iinclude $(INCLUDE_DIRS)
 
 
 $(LIB) : $(C_OBJ)

@@ -18,7 +18,8 @@ COVERAGE_OBJ := $(C_SRC:$(C_SRC_DIR)/%.c=$(COVERAGE_OBJ_DIR)/%.o) $(CPP_TEST_SRC
 CDEFINES := -D__MINIMAL_STD_TEST__
 INCLUDE_DIRS += -I$(CPPUTEST_PATH)/include 
 
-LDLIBS := -L../minimalclib/lib/$(NATIVE_BUILD_DIR) -lminimalclib
+MINIMALCLIB_DIR ?= ../minimalclib
+LDLIBS := -L$(MINIMALCLIB_DIR)/lib/$(NATIVE_BUILD_DIR) -lminimalclib
 
 TEST_LIB := -L$(CPPUTEST_PATH)/lib -lCppUTest -lCppUTestExt
 
