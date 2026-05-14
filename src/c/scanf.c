@@ -286,12 +286,16 @@ int __sscanf(const char *buffer, const char *format, ...)
             long value = 0;
             char *ending_char = numeric_buffer;
 
+            //  Skip leading whitespace (the buffer may include it)
+            while (*ending_char == ' ' || *ending_char == '\t' || *ending_char == '\n' || *ending_char == '\r') { ending_char++; }
+
             //  Parse optional sign
             int sign = 1;
             if (*ending_char == '-') { sign = -1; ending_char++; }
             else if (*ending_char == '+') { ending_char++; }
 
-            //  Detect base from prefix when base == 0 (for %i format specifier)
+            //  Detect base from prefix when base == 0 (for %i format specifier),
+            //  or strip an explicit 0x/0X prefix when base is 16.
             int actual_base = base;
             if (actual_base == 0)
             {
@@ -300,6 +304,10 @@ int __sscanf(const char *buffer, const char *format, ...)
                     if (*ending_char == 'x' || *ending_char == 'X') { actual_base = 16; ending_char++; }
                     else { actual_base = 8; }
                 } else { actual_base = 10; }
+            }
+            else if (actual_base == 16 && *ending_char == '0' && (*(ending_char + 1) == 'x' || *(ending_char + 1) == 'X'))
+            {
+                ending_char += 2;
             }
 
             //  Parse digits
