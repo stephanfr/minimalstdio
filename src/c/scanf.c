@@ -284,10 +284,39 @@ int __sscanf(const char *buffer, const char *format, ...)
             *numeric_buffer_loc++ = '\0';
 
             long value = 0;
-            char *ending_char;
-            int  result_code = -1;
+            char *ending_char = numeric_buffer;
 
-            value = strtol( numeric_buffer, &ending_char, base, &result_code );
+            //  Parse optional sign
+            int sign = 1;
+            if (*ending_char == '-') { sign = -1; ending_char++; }
+            else if (*ending_char == '+') { ending_char++; }
+
+            //  Detect base from prefix when base == 0 (for %i format specifier)
+            int actual_base = base;
+            if (actual_base == 0)
+            {
+                if (*ending_char == '0') {
+                    ending_char++;
+                    if (*ending_char == 'x' || *ending_char == 'X') { actual_base = 16; ending_char++; }
+                    else { actual_base = 8; }
+                } else { actual_base = 10; }
+            }
+
+            //  Parse digits
+            while (*ending_char)
+            {
+                int digit;
+                char c = *ending_char;
+                if (c >= '0' && c <= '9') digit = c - '0';
+                else if (c >= 'a' && c <= 'f') digit = (int)(c - 'a') + 10;
+                else if (c >= 'A' && c <= 'F') digit = (int)(c - 'A') + 10;
+                else break;
+                if (digit >= actual_base) break;
+                value = value * actual_base + digit;
+                ending_char++;
+            }
+
+            value *= sign;
 
             current_buffer_char = starting_buffer_loc + ( ending_char - numeric_buffer );
 
